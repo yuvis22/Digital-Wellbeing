@@ -19,8 +19,13 @@ import { StyleSheet } from 'react-native';
 // Keep splash screen visible while loading fonts
 SplashScreen.preventAutoHideAsync();
 
-// Your publishable key from the Clerk Dashboard
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_dummy-key-for-development';
+// Get the publishable key from environment variables
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+// Ensure we have a valid publishable key
+if (!publishableKey) {
+  throw new Error('Missing EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY environment variable');
+}
 
 export default function RootLayout() {
   useFrameworkReady();

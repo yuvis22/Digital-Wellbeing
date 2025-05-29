@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import { storage } from '@/utils/storage';
 
 // Mock database until connected to MongoDB
 const MEDICATIONS_STORAGE_KEY = 'medications';
@@ -38,9 +38,9 @@ const mockMedications = [
 // Initialize storage with mock data for development
 const initializeStorage = async () => {
   try {
-    const storedMedications = await SecureStore.getItemAsync(MEDICATIONS_STORAGE_KEY);
+    const storedMedications = await storage.getItem(MEDICATIONS_STORAGE_KEY);
     if (!storedMedications) {
-      await SecureStore.setItemAsync(MEDICATIONS_STORAGE_KEY, JSON.stringify(mockMedications));
+      await storage.setItem(MEDICATIONS_STORAGE_KEY, JSON.stringify(mockMedications));
     }
   } catch (error) {
     console.error('Error initializing storage:', error);
@@ -53,7 +53,7 @@ initializeStorage();
 // Fetch all medications
 export const fetchMedications = async () => {
   try {
-    const storedMedications = await SecureStore.getItemAsync(MEDICATIONS_STORAGE_KEY);
+    const storedMedications = await storage.getItem(MEDICATIONS_STORAGE_KEY);
     return storedMedications ? JSON.parse(storedMedications) : [];
   } catch (error) {
     console.error('Error fetching medications:', error);
@@ -83,7 +83,7 @@ export const addMedication = async (medicationData: any) => {
     };
     
     const updatedMedications = [...medications, newMedication];
-    await SecureStore.setItemAsync(MEDICATIONS_STORAGE_KEY, JSON.stringify(updatedMedications));
+    await storage.setItem(MEDICATIONS_STORAGE_KEY, JSON.stringify(updatedMedications));
     
     return newMedication;
   } catch (error) {
@@ -109,7 +109,7 @@ export const updateMedication = async (id: string, medicationData: any) => {
     };
     
     medications[index] = updatedMedication;
-    await SecureStore.setItemAsync(MEDICATIONS_STORAGE_KEY, JSON.stringify(medications));
+    await storage.setItem(MEDICATIONS_STORAGE_KEY, JSON.stringify(medications));
     
     return updatedMedication;
   } catch (error) {
@@ -124,7 +124,7 @@ export const deleteMedication = async (id: string) => {
     const medications = await fetchMedications();
     const updatedMedications = medications.filter((med: any) => med.id !== id);
     
-    await SecureStore.setItemAsync(MEDICATIONS_STORAGE_KEY, JSON.stringify(updatedMedications));
+    await storage.setItem(MEDICATIONS_STORAGE_KEY, JSON.stringify(updatedMedications));
     
     return true;
   } catch (error) {
