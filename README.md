@@ -113,17 +113,3 @@ Medication/
 4. **Authentication issues**
    - Verify your Clerk publishable key in the `.env` file
    - Ensure you have an active Clerk account
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support, please open an issue in the GitHub repository or contact the development team.
-
-## Acknowledgments
-
-- Expo team for the amazing framework
-- Clerk for authentication services
-- All contributors who have helped shape this project
