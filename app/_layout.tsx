@@ -1,30 +1,15 @@
-import { useEffect, useState } from 'react';
-import { ClerkProvider } from '@clerk/clerk-expo';
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
-import { useFonts } from 'expo-font';
-import { 
-  Inter_400Regular, 
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_700Bold 
-} from '@expo-google-fonts/inter';
+import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
-import AuthContextProvider from '@/contexts/AuthContext';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StyleSheet } from 'react-native';
 
 // Keep splash screen visible while loading fonts
 SplashScreen.preventAutoHideAsync();
 
-// Your publishable key from the Clerk Dashboard
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_dummy-key-for-development';
-
 export default function RootLayout() {
   useFrameworkReady();
-  const [appIsReady, setAppIsReady] = useState(false);
 
   const [fontsLoaded, fontError] = useFonts({
     'Inter-Regular': Inter_400Regular,
@@ -33,39 +18,23 @@ export default function RootLayout() {
     'Inter-Bold': Inter_700Bold,
   });
 
-  // Hide splash screen once fonts are loaded
   useEffect(() => {
     if (fontsLoaded || fontError) {
-      // Fonts loaded or error, either way we'll display the app
-      setAppIsReady(true);
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
 
-  if (!appIsReady) {
+  if (!fontsLoaded && !fontError) {
     return null;
   }
 
   return (
-    <ClerkProvider publishableKey={publishableKey}>
-      <AuthContextProvider>
-        <GestureHandlerRootView style={styles.container}>
-          <SafeAreaProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
-            </Stack>
-            <StatusBar style="auto" />
-          </SafeAreaProvider>
-        </GestureHandlerRootView>
-      </AuthContextProvider>
-    </ClerkProvider>
+    <>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

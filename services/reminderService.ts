@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import { storage } from '@/utils/storage';
 import { fetchMedications } from './medicationService';
 
 // Mock database until connected to MongoDB
@@ -58,7 +58,7 @@ const generateMockReminders = async () => {
       }
     }
     
-    await SecureStore.setItemAsync(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
+    await storage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
     return reminders;
   } catch (error) {
     console.error('Error generating mock reminders:', error);
@@ -69,7 +69,7 @@ const generateMockReminders = async () => {
 // Fetch all reminders
 export const fetchReminders = async () => {
   try {
-    const storedReminders = await SecureStore.getItemAsync(REMINDERS_STORAGE_KEY);
+    const storedReminders = await storage.getItem(REMINDERS_STORAGE_KEY);
     
     if (!storedReminders) {
       return await generateMockReminders();
@@ -104,7 +104,7 @@ export const updateReminderStatus = async (reminderId: string, status: 'complete
     }
     
     reminders[index].status = status;
-    await SecureStore.setItemAsync(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
+    await storage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
     
     return reminders[index];
   } catch (error) {
